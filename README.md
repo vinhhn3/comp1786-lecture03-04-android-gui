@@ -84,3 +84,30 @@ public class MainActivity extends AppCompatActivity {
 After that, we can display the AlertDialog
 
 ![img_5.png](img_5.png)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant Activity as MainActivity
+    participant Inputs as Form Controls<br/>(Inputs & Spinner)
+    participant Dialog as AlertDialog
+
+    %% Flow
+    User->>Activity: Clicks Submit Button
+    
+    rect rgb(240, 240, 240)
+        note over Activity, Inputs: Collect Inputs
+        Activity->>Inputs: Read text & spinner selection
+        Inputs-->>Activity: Return form data
+    end
+
+    rect rgb(230, 245, 230)
+        note over Activity, Dialog: Build & Show Dialog
+        Activity->>Dialog: displayNextAlert(details)
+        Dialog-->>User: Display dialog with details
+    end
+
+    User->>Dialog: Clicks "Back" button
+    Dialog-->>User: Dismiss dialog
+```
