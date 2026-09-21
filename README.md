@@ -130,6 +130,7 @@ Voila, we can set the selected date back to the view
 ![img_4.png](img_4.png)
 
 ```plantuml
+@startuml
 autonumber
 actor User
 participant "MainActivity" as Activity
@@ -164,4 +165,5 @@ Fragment -> Activity: updateDOB(dob)
 == 4. UI Update ==
 Activity -> View: dobControl.setText(dob.toString())
 View --> User: Displays updated date text
+@enduml
 ```
