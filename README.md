@@ -128,3 +128,40 @@ public void onDateSet(DatePicker datePicker, int year, int month, int day){
 Voila, we can set the selected date back to the view
 
 ![img_4.png](img_4.png)
+
+```plantuml
+autonumber
+actor User
+participant "MainActivity" as Activity
+participant "TextView\n(dobControl)" as View
+participant "DatePickerFragment" as Fragment
+participant "DatePickerDialog" as Dialog
+
+== 1. User Interaction ==
+User -> View: Clicks dobControl
+View -> Activity: onClick(view)
+
+== 2. Fragment Creation & Display ==
+Activity -> Fragment: new DatePickerFragment()
+Activity -> Fragment: show(getSupportFragmentManager(), "datePicker")
+
+note over Fragment, Dialog
+Android Lifecycle triggers onCreateDialog()
+end note
+
+Fragment -> Dialog: LocalDate.now() (Get current date)
+Fragment -> Dialog: new DatePickerDialog(getActivity(), this, year, month, day)
+Dialog --> User: Displays Date Picker Dialog
+
+== 3. Date Selection & Callback ==
+User -> Dialog: Selects date & clicks OK
+Dialog -> Fragment: onDateSet(datePicker, year, month, day)
+
+Fragment -> Fragment: LocalDate.of(year, ++month, day)
+Fragment -> Activity: getActivity() (Cast to MainActivity)
+Fragment -> Activity: updateDOB(dob)
+
+== 4. UI Update ==
+Activity -> View: dobControl.setText(dob.toString())
+View --> User: Displays updated date text
+```
