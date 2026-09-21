@@ -111,3 +111,46 @@ sequenceDiagram
     User->>Dialog: Clicks "Back" button
     Dialog-->>User: Dismiss dialog
 ```
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant SubmitBtn as Button<br/>(submitBtn)
+    participant Inputs as Form Controls<br/>(EditTexts & Spinner)
+    participant Activity as MainActivity
+    participant Builder as AlertDialog.Builder
+    participant Dialog as AlertDialog
+
+    %% 1. Trigger Form Submission
+    User->>SubmitBtn: Clicks submitBtn
+    SubmitBtn->>Activity: onClick(view)
+
+    %% 2. Gather Input Values
+    Activity->>Activity: getInputs()
+    
+    activate Activity
+    Activity->>Inputs: findViewById() & getText() / getSelectedItem()
+    Inputs-->>Activity: Return name, email, phone, workStatus
+    
+    %% 3. Display Alert Dialog
+    Activity->>Activity: displayNextAlert(name, phone, email, workStatus)
+    deactivate Activity
+
+    activate Activity
+    Activity->>Builder: new AlertDialog.Builder(this)
+    Activity->>Builder: setTitle("Details Entered")
+    Activity->>Builder: setMessage(formattedDetails)
+    Activity->>Builder: setNeutralButton("Back", OnClickListener)
+    Activity->>Builder: show()
+    
+    Builder->>Dialog: create() & show()
+    deactivate Activity
+    
+    Dialog-->>User: Displays AlertDialog with details
+
+    %% 4. Dialog Interaction
+    User->>Dialog: Clicks "Back" button
+    Dialog->>Activity: onClick(dialogInterface, i)
+    Dialog-->>User: Dialog dismissed
+```
