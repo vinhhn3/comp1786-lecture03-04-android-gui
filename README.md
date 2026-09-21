@@ -129,41 +129,38 @@ Voila, we can set the selected date back to the view
 
 ![img_4.png](img_4.png)
 
-```plantuml
-@startuml
-autonumber
-actor User
-participant "MainActivity" as Activity
-participant "TextView\n(dobControl)" as View
-participant "DatePickerFragment" as Fragment
-participant "DatePickerDialog" as Dialog
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant View as TextView<br/>(dobControl)
+    participant Activity as MainActivity
+    participant Fragment as DatePickerFragment
+    participant Dialog as DatePickerDialog
 
-== 1. User Interaction ==
-User -> View: Clicks dobControl
-View -> Activity: onClick(view)
+    %% 1. User Interaction
+    User->>View: Clicks dobControl
+    View->>Activity: onClick(view)
 
-== 2. Fragment Creation & Display ==
-Activity -> Fragment: new DatePickerFragment()
-Activity -> Fragment: show(getSupportFragmentManager(), "datePicker")
+    %% 2. Fragment Creation & Display
+    Activity->>Fragment: new DatePickerFragment()
+    Activity->>Fragment: show(getSupportFragmentManager(), "datePicker")
+    
+    Note over Fragment, Dialog: Android Lifecycle triggers onCreateDialog()
+    
+    Fragment->>Dialog: LocalDate.now() (Get current date)
+    Fragment->>Dialog: new DatePickerDialog(getActivity(), this, year, month, day)
+    Dialog-->>User: Displays Date Picker Dialog
 
-note over Fragment, Dialog
-Android Lifecycle triggers onCreateDialog()
-end note
+    %% 3. Date Selection & Callback
+    User->>Dialog: Selects date & clicks OK
+    Dialog->>Fragment: onDateSet(datePicker, year, month, day)
+    
+    Fragment->>Fragment: LocalDate.of(year, ++month, day)
+    Fragment->>Activity: getActivity() (Cast to MainActivity)
+    Fragment->>Activity: updateDOB(dob)
 
-Fragment -> Dialog: LocalDate.now() (Get current date)
-Fragment -> Dialog: new DatePickerDialog(getActivity(), this, year, month, day)
-Dialog --> User: Displays Date Picker Dialog
-
-== 3. Date Selection & Callback ==
-User -> Dialog: Selects date & clicks OK
-Dialog -> Fragment: onDateSet(datePicker, year, month, day)
-
-Fragment -> Fragment: LocalDate.of(year, ++month, day)
-Fragment -> Activity: getActivity() (Cast to MainActivity)
-Fragment -> Activity: updateDOB(dob)
-
-== 4. UI Update ==
-Activity -> View: dobControl.setText(dob.toString())
-View --> User: Displays updated date text
-@enduml
+    %% 4. UI Update
+    Activity->>View: dobControl.setText(dob.toString())
+    View-->>User: Displays updated date text
 ```
