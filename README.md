@@ -116,6 +116,38 @@ We will add a method to MainActivity to handle the option selection
     }
 ```
 
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant Activity as MainActivity
+    participant MenuInflater as MenuInflater
+    participant Inputs as Form Controls
+    participant Dialog as AlertDialog
+    participant Toast as Toast Message
+
+    %% Phase 1: Menu Creation
+    rect rgb(240, 240, 240)
+        note over Activity, MenuInflater: Initial Setup
+        Activity->>MenuInflater: getMenuInflater().inflate(R.menu.menu_main, menu)
+        MenuInflater-->>Activity: Menu loaded
+    end
+
+    %% Phase 2: Menu Selection
+    User->>Activity: Selects Menu Option
+
+    alt Selects "itemNext"
+        Activity->>Inputs: getInputs()
+        Inputs-->>Activity: Return form data
+        Activity->>Dialog: displayNextAlert(...)
+        Dialog-->>User: Show details dialog
+
+    else Selects "itemExit"
+        Activity->>Toast: Toast.makeText("You asked to exit...").show()
+        Toast-->>User: Show Toast message
+    end
+```
+
 After that, we can use the button on the Menu
 
 ![img_12.png](img_12.png)
